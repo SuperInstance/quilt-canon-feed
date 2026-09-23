@@ -64,27 +64,33 @@ def cmd_serve(args):
 
 def main():
     p = argparse.ArgumentParser(description="quilt-canon-feed — RSS/Atom/JSON feed for canon")
-    p.add_argument("--limit", type=int, default=20)
-    p.add_argument("--title", default="Quilt Canon")
-    p.add_argument("--link", default="https://superinstance.dev/canon")
-    p.add_argument("--description", default="Substrate walker canon lore")
     sub = p.add_subparsers(dest="cmd", required=True)
+
+    def add_common(p):
+        p.add_argument("--limit", type=int, default=20)
+        p.add_argument("--title", default="Quilt Canon")
+        p.add_argument("--link", default="https://superinstance.dev/canon")
+        p.add_argument("--description", default="Substrate walker canon lore")
 
     p_r = sub.add_parser("rss", help="Generate RSS 2.0 feed")
     p_r.add_argument("--output", help="Output file (default: stdout)")
+    add_common(p_r)
     p_r.set_defaults(func=cmd_rss)
 
     p_a = sub.add_parser("atom", help="Generate Atom 1.0 feed")
     p_a.add_argument("--output", help="Output file (default: stdout)")
+    add_common(p_a)
     p_a.set_defaults(func=cmd_atom)
 
     p_j = sub.add_parser("json", help="Generate JSON Feed v1")
     p_j.add_argument("--output", help="Output file (default: stdout)")
+    add_common(p_j)
     p_j.set_defaults(func=cmd_jsonfeed)
 
     p_s = sub.add_parser("serve", help="Serve feeds via HTTP")
     p_s.add_argument("--port", type=int, default=8766)
     p_s.add_argument("--dir", default="./canon-feeds")
+    add_common(p_s)
     p_s.set_defaults(func=cmd_serve)
 
     args = p.parse_args()
